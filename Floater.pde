@@ -1,76 +1,69 @@
-class Floater //Do NOT modify the Floater class! Make changes in the Spaceship class 
-{   
-  protected int corners;  //the number of corners, a triangular floater has 3   
-  protected int[] xCorners;   
-  protected int[] yCorners;   
-  protected int myColor;   
-  protected double myCenterX, myCenterY; //holds center coordinates   
-  protected double myXspeed, myYspeed; //holds the speed of travel in the x and y directions   
-  protected double myPointDirection; //holds current direction the ship is pointing in degrees    
+//Minor changes made by Leo :)
+//  - Variable name changes
+//  - Changes to comments
+//  - Floater vertex data has been changed to a 2d array
+//  - Floater orientation has been changed from degrees to radians
 
-  //Accelerates the floater in the direction it is pointing (myPointDirection)   
-  public void accelerate (double dAmount)   
-  {          
-    //convert the current direction the floater is pointing to radians    
-    double dRadians =myPointDirection*(Math.PI/180);     
-    //change coordinates of direction of travel    
-    myXspeed += ((dAmount) * Math.cos(dRadians));    
-    myYspeed += ((dAmount) * Math.sin(dRadians));       
-  }   
-  public void turn (double degreesOfRotation)   
-  {     
-    //rotates the floater by a given number of degrees    
-    myPointDirection+=degreesOfRotation;   
-  }   
-  public void move ()   //move the floater in the current direction of travel
-  {      
-    //change the x and y coordinates by myXspeed and myYspeed       
-    myCenterX += myXspeed;    
-    myCenterY += myYspeed;     
+public class Floater{
+  //Increase readablity when accessing x and y elements from a 2d array
+  protected int coordX = 0; //X coordinate index
+  protected int coordY = 1; //Y coordinate index
+  
+  protected double[][] vertices;
+  protected color floaterColor;
+  protected double x, y,           //Center relative to the polygon
+                   speedX, speedY,
+                   orientation;    //Radians
 
-    //wrap around screen    
-    if(myCenterX >width)
-    {     
-      myCenterX = 0;    
-    }    
-    else if (myCenterX<0)
-    {     
-      myCenterX = width;    
-    }    
-    if(myCenterY >height)
-    {    
-      myCenterY = 0;    
-    } 
+  //Accelerate the floater in the direction it is pointing (orientation)   
+  public void accelerate(double acceleration){    
+    speedX += acceleration*Math.cos(orientation);
+    speedY += acceleration*Math.sin(orientation);       
+  }
+  
+  //Rotate the floater some amount of radians
+  public void turn(double rotate){
+    orientation += rotate;   
+  }
+  
+  //Update the floaters position
+  public void move(){
+    //Move the floater       
+    x += speedX;    
+    y += speedY;     
+
+    //Wrap around the screen if needed
+    if (x > width){     
+      x = 0;    
+    } else if (x < 0){     
+      x = width;    
+    }
     
-    else if (myCenterY < 0)
-    {     
-      myCenterY = height;    
+    if (y > height){    
+      y = 0;    
+    } else if (y < 0){     
+      y = height;    
     }   
-  }   
-  public void show ()  //Draws the floater at the current position  
-  {             
-    fill(myColor);   
-    stroke(myColor);    
+  }
+  
+  //Draw the floater
+  public void drawFloater(){         
+    fill(floaterColor);   
+    stroke(floaterColor);    
     
-    //translate the (x,y) center of the ship to the correct position
-    translate((float)myCenterX, (float)myCenterY);
-
-    //convert degrees to radians for rotate()     
-    float dRadians = (float)(myPointDirection*(Math.PI/180));
+    //Move the center of the polygon to (0, 0) and set its orientation to 0 radians
+    translate((float)x, (float)y);
+    rotate((float)orientation);
     
-    //rotate so that the polygon will be drawn in the correct direction
-    rotate(dRadians);
-    
-    //draw the polygon
+    //Draw polygon
     beginShape();
-    for (int nI = 0; nI < corners; nI++)
-    {
-      vertex(xCorners[nI], yCorners[nI]);
+    for (int i = 0; i < vertices.length; i++){
+      vertex((float)vertices[i][coordX], (float)vertices[i][coordY]);
     }
     endShape(CLOSE);
 
-    //"unrotate" and "untranslate" in reverse order
-    rotate(-1*dRadians);
-    translate(-1*(float)myCenterX, -1*(float)myCenterY);
+    //Orient the polygon accordingly and move its position back to the desired location (The reverse of what was previously done)
+    rotate((float)-orientation);
+    translate((float)-x, (float)-y);
   }   
 } 
