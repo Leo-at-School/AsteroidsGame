@@ -52,18 +52,19 @@ public class Floater{
     stroke(floaterColor);    
     
     //Move the center of the polygon to (0, 0) and set its orientation to 0 radians
-    translate((float)x, (float)y);
-    rotate((float)orientation);
+    translate(x, y);
+    rotate(orientation);
     
     //Draw polygon
     beginShape();
     for (int i = 0; i < vertices.length; i++){
-      vertex((float)vertices[i][coordX], (float)vertices[i][coordY]);
+      vertex(vertices[i][coordX], vertices[i][coordY]);
     }
     endShape(CLOSE);
 
     //Orient the polygon accordingly and move its position back to the desired location (The reverse of what was previously done)
-    rotate((float)-orientation);
-    translate((float)-x, (float)-y);
+    rotate(-orientation);
+    translate(-x, -y);
   }   
 } 
+
